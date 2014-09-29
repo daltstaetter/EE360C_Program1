@@ -3,6 +3,7 @@ package program1_take2;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class TestMain2 
@@ -75,9 +76,23 @@ public class TestMain2
 			tempCard = 0;
 			maxCard = 0;
 			count = 0;
-			uNodes.add(new NodeU()); // this is bc of my stop condition in the recurse it won't allow me to index past the last one to make my return statement
+			NodeU rr = new NodeU();
+			uNodes.add(rr); // this is bc of my stop condition in the recurse it won't allow me to index past the last one to make my return statement
 			
-			recurse(uNodes.get(0));
+			//for(int p = 0; p < uNodes.size()-1; p++) // bc the last one I added doesn't really count
+			{	recurse(uNodes.get(0));
+				
+//				uNodes.remove(uNodes.indexOf(rr));
+//				Collections.rotate(uNodes, -1);
+//				uNodes.add(rr);
+//				System.out.println("maxWeight: " + maxWeight + "\nmaxCard: " + maxCard + "\npairs: " + pair);
+//				
+//				tempWeight = 0;
+//				maxWeight = Integer.MIN_VALUE; // set initial value so that anything will replace it
+//				tempCard = 0;
+//				maxCard = 0;
+//				count = 0;
+			}
 			
 		}
 		catch(FileNotFoundException e)
@@ -102,13 +117,18 @@ public class TestMain2
 		// iterates through all possible combos for this particular uNode
 		for(int i = 0; i < unode.alNodeV().size(); i++)
 		{	
-			
-			
-			
+			int vnodeId = unode.alNodeV().get(i).id();
+				if(markedVnodes.contains(vnodeId))
+				{// I need to move onto its next available vnode
+					// two things should happen 1) theres no available nodes
+					// 2) I move onto the next node if there are matches left
+					continue;
+				}
 			
 			/////////$$$$$$$ !!!!!!!!!!!!!!!!!! $$$$$$$$$$$$$$$ need to mark and unmark available id's
 			// potential problematic if another uNode has claimed this particular unode's first choice for vNodes
-			Pair uvPair = new Pair(unode.id(), unode.alNodeV().get(i).id());
+			Pair uvPair = new Pair(unode.id(), unode.alNodeV().get(i).id(), unode.weight() + unode.alNodeV().get(i).weight());
+			markedVnodes.add(unode.alNodeV().get(i).id());
 			tempPair.add(uvPair);
 			tempWeight += (unode.weight() + unode.alNodeV().get(i).weight());
 			tempCard++;
@@ -124,23 +144,21 @@ public class TestMain2
 			if(tempWeight > maxWeight)
 			{
 				maxWeight = tempWeight;
+				System.out.println("new Max Weight, Pairs: " + pair.toString());
+				//System.out.println("new pair: " + tempPair.
 				pair = new ArrayList<ArrayList<Pair>>();
 				pair.add(tempPair);
 			}
 			
 			count++;
 			recurse(uNodes.get(count));
-			
+			// its jumping to here when I have a null node
 			count--;
 			tempCard--;
 			tempWeight -= (unode.weight() + unode.alNodeV().get(i).weight());
 			tempPair.remove(uvPair);//new Pair(unode.id(), unode.alNodeV().get(i).id()));
 			
-			
-			
-			
-			
-			
+			markedVnodes.remove(markedVnodes.indexOf(vnodeId));
 			
 		}
 		

@@ -35,6 +35,8 @@ public class Pair
 		maxWeight = maxWeight_temp;
 		
 	}
-	
-	
+	public void print()
+	{
+		System.out.print(u_id + " " + v_id + " " + maxWeight);
+	}
 }
